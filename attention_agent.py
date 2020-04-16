@@ -47,7 +47,7 @@ class AttentionAgent():
         self.W_k = np.random.random((self.d_in, self.d))
         self.W_q = np.random.random((self.d_in, self.d))
 
-        self.controller = nn.LSTM(16, 3)
+        self.controller = nn.LSTM(20, 3, 16)
 
 
     def act(self, obs):
@@ -67,11 +67,11 @@ class AttentionAgent():
         positions = np.array([f(k, locations) for k in ind]) # index to position mapping
         positions = np.reshape(positions, (1,-1))
 
-        w = parameters_to_vector(self.controller.parameters()).detach().numpy()
-        print(w.shape)
-        #torch.from_numpy(vector_to_parameters(w))
-        action = self.controller(positions.view(1, 1, -1))
-        action = [0.1, 0.2, -0.1]
-        exit()
-        #print('action.shape =', action.shape)
+        #w = parameters_to_vector(self.controller.parameters()).detach().numpy()
+
+        with torch.autograd.no_grad():
+            positions = torch.from_numpy(positions.reshape(1, 1, -1))
+            action, _ = self.controller(positions.float())
+        
+        action = np.reshape(action.numpy(), (-1,))
         return action
