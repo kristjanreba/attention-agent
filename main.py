@@ -5,8 +5,6 @@ from attention_agent import AttentionAgent
 env_name = 'CarRacing-v0'
 
 env = gym.make(env_name)
-env.close()
-env = gym.make(env_name)
 agent = AttentionAgent()
 
 max_episodes = 500
